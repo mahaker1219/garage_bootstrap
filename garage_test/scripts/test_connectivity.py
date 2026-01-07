@@ -6,9 +6,9 @@ This script allows you to test S3 connectivity against a live Garage cluster
 using multiple client libraries (MinIO, boto3, Azure Blob Storage).
 
 Usage:
-    python -m garage_bootstrap.scripts.test_connectivity
-    python -m garage_bootstrap.scripts.test_connectivity --library minio
-    python -m garage_bootstrap.scripts.test_connectivity --endpoint localhost:3900 --access-key GK... --secret-key ...
+    python -m garage_test.scripts.test_connectivity
+    python -m garage_test.scripts.test_connectivity --library minio
+    python -m garage_test.scripts.test_connectivity --endpoint localhost:3900 --access-key GK... --secret-key ...
 """
 
 import argparse
@@ -21,7 +21,7 @@ from typing import Dict, Any, List
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from garage_bootstrap.connectivity import (
+from garage_test.connectivity import (
     MinioConnectivityTest,
     S3ConnectivityTest,
     AzureBlobConnectivityTest,

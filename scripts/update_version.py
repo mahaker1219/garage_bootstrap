@@ -181,12 +181,19 @@ def main():
     else:
         print(f"Warning: values.yaml not found at {values_yaml}")
 
-    # Update __init__.py
-    init_py = project_root / args.src_dir / "__init__.py"
-    if init_py.exists():
-        update_init_version(init_py, version)
+    # Update garage_bootstrap __init__.py
+    bootstrap_init = project_root / "garage_bootstrap" / "__init__.py"
+    if bootstrap_init.exists():
+        update_init_version(bootstrap_init, version)
     else:
-        print(f"Warning: __init__.py not found at {init_py}")
+        print(f"Warning: garage_bootstrap/__init__.py not found")
+
+    # Update garage_test __init__.py
+    test_init = project_root / "garage_test" / "__init__.py"
+    if test_init.exists():
+        update_init_version(test_init, version)
+    else:
+        print(f"Warning: garage_test/__init__.py not found")
 
     print(f"\nVersion update complete: {args.version}")
     return 0

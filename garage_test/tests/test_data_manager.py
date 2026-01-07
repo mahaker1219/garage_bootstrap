@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from garage_bootstrap.data_manager import DataManager
+from garage_test.data_manager import DataManager
 
 
 class TestDataManager:

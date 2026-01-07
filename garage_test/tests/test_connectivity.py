@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from garage_bootstrap.connectivity import (
+from garage_test.connectivity import (
     MinioConnectivityTest,
     S3ConnectivityTest,
     AzureBlobConnectivityTest,
@@ -271,9 +271,9 @@ class TestAzureBlobConnectivity:
 class TestRunAllConnectivityTests:
     """Tests for running all connectivity tests."""
 
-    @patch("garage_bootstrap.connectivity.MinioConnectivityTest")
-    @patch("garage_bootstrap.connectivity.S3ConnectivityTest")
-    @patch("garage_bootstrap.connectivity.AzureBlobConnectivityTest")
+    @patch("garage_test.connectivity.MinioConnectivityTest")
+    @patch("garage_test.connectivity.S3ConnectivityTest")
+    @patch("garage_test.connectivity.AzureBlobConnectivityTest")
     def test_all_pass(self, mock_azure, mock_s3, mock_minio):
         """Test that all libraries pass connectivity tests."""
         for mock_class in [mock_minio, mock_s3, mock_azure]:
@@ -293,9 +293,9 @@ class TestRunAllConnectivityTests:
         assert "s3" in results["libraries"]
         assert "azure" in results["libraries"]
 
-    @patch("garage_bootstrap.connectivity.MinioConnectivityTest")
-    @patch("garage_bootstrap.connectivity.S3ConnectivityTest")
-    @patch("garage_bootstrap.connectivity.AzureBlobConnectivityTest")
+    @patch("garage_test.connectivity.MinioConnectivityTest")
+    @patch("garage_test.connectivity.S3ConnectivityTest")
+    @patch("garage_test.connectivity.AzureBlobConnectivityTest")
     def test_one_fails(self, mock_azure, mock_s3, mock_minio):
         """Test that overall fails if one library fails."""
         mock_minio_instance = MagicMock()

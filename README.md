@@ -4,12 +4,16 @@ A helper service and Helm chart for declaratively bootstrapping [Garage](https:/
 
 ## Overview
 
-Garage is an S3-compatible distributed object storage system designed for self-hosting. This project provides:
+Garage is an S3-compatible distributed object storage system designed for self-hosting. This project provides two services:
 
-- **Bootstrap Service**: A Docker container with Python utilities for cluster initialization
-- **Helm Chart**: Declarative bucket and access key creation via GitOps
+### garage_bootstrap/
+- **Bootstrap Service**: A Docker container for cluster initialization
+- **Helm Chart Integration**: Declarative bucket and access key creation via GitOps
+
+### garage_test/
 - **Connectivity Tests**: Validation scripts using MinIO, boto3 (S3), and Azure Blob Storage clients
 - **Data Management**: Backup and restore utilities for application-level data persistence
+- **Persistence Tests**: Multi-stage tests for data persistence across pod restarts
 
 ### Why Garage?
 
@@ -31,10 +35,15 @@ This project addresses the cons by providing a feature-rich bootstrap container 
 
 ### Installation
 
-1. **Build the Docker image:**
+1. **Build the Docker images:**
 
 ```bash
+# Build both images
 make build IMG_TAG=v0.1.0
+
+# Or build individually
+make build-bootstrap IMG_TAG=v0.1.0
+make build-test IMG_TAG=v0.1.0
 ```
 
 2. **Install the Helm chart:**
@@ -124,35 +133,44 @@ Test data persistence across Garage pod restarts:
 
 ```bash
 # Stage 1: Create test data
-pytest tests/test_persistence.py -v -m "stage1"
+cd garage_test && pytest tests/test_persistence.py -v -m "stage1"
 
 # Restart Garage pods here...
 
 # Stage 2: Verify data persisted
-pytest tests/test_persistence.py -v -m "stage2"
+cd garage_test && pytest tests/test_persistence.py -v -m "stage2"
 ```
 
 ## Project Structure
 
 ```
 garage_bootstrap/
-├── garage_bootstrap/          # Python package
+├── garage_bootstrap/          # Bootstrap service (for Helm chart)
 │   ├── __init__.py
 │   ├── admin_client.py       # Garage Admin API client
 │   ├── bootstrap.py          # Bootstrap logic
+│   ├── Dockerfile            # Container image
+│   ├── requirements.txt      # Python dependencies
+│   ├── scripts/
+│   │   └── bootstrap.py      # CLI entry point
+│   └── tests/
+│       ├── conftest.py       # Test fixtures
+│       ├── test_admin_client.py
+│       └── test_bootstrap.py
+├── garage_test/               # Testing service
+│   ├── __init__.py
 │   ├── connectivity.py       # S3 connectivity tests
 │   ├── data_manager.py       # Backup/restore utilities
 │   ├── Dockerfile            # Container image
 │   ├── requirements.txt      # Python dependencies
 │   ├── pytest.ini            # Pytest configuration
 │   ├── scripts/
-│   │   └── bootstrap.py      # CLI entry point
+│   │   └── test_connectivity.py  # CLI for connectivity tests
 │   └── tests/
 │       ├── conftest.py       # Test fixtures
-│       ├── test_admin_client.py
-│       ├── test_bootstrap.py
 │       ├── test_connectivity.py
 │       ├── test_data_manager.py
+│       ├── test_integration.py
 │       └── test_persistence.py
 ├── chart/                     # Helm chart
 │   ├── Chart.yaml
@@ -325,17 +343,22 @@ git submodule update --init --recursive
 make install
 
 # Run tests
-make test
+make test-all
 ```
 
 ### Building
 
 ```bash
-# Build Docker image
+# Build both Docker images
 make build IMG_TAG=dev
+
+# Build individually
+make build-bootstrap IMG_TAG=dev
+make build-test IMG_TAG=dev
 
 # Test locally
 docker run --rm garage-bootstrap:dev --help
+docker run --rm garage-test:dev --help
 ```
 
 ## Testing Against a Live Cluster

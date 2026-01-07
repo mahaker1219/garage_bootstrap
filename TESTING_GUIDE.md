@@ -1,6 +1,12 @@
-# Testing Guide for Garage Bootstrap
+# Testing Guide for Garage Test
 
 This guide explains how to run tests against a live Garage cluster to validate connectivity and functionality.
+
+## Project Structure
+
+The project is split into two services:
+- **garage_bootstrap/**: Bootstrap functionality for the Helm chart
+- **garage_test/**: Testing functionality (connectivity, data manager, persistence)
 
 ## Prerequisites
 
@@ -14,8 +20,11 @@ This guide explains how to run tests against a live Garage cluster to validate c
 ### 1. Install Dependencies
 
 ```bash
-cd garage_bootstrap
-pip install -r requirements.txt
+# Install test dependencies
+pip install -r garage_test/requirements.txt
+
+# Or install all dependencies
+make install
 ```
 
 ### 2. Set Environment Variables
@@ -46,12 +55,12 @@ make test-unit
 make test-integration
 
 # Run connectivity tests only
-python -m garage_bootstrap.scripts.test_connectivity
+python -m garage_test.scripts.test_connectivity
 
 # Run specific library test
-python -m garage_bootstrap.scripts.test_connectivity --library minio
-python -m garage_bootstrap.scripts.test_connectivity --library s3
-python -m garage_bootstrap.scripts.test_connectivity --library azure
+python -m garage_test.scripts.test_connectivity --library minio
+python -m garage_test.scripts.test_connectivity --library s3
+python -m garage_test.scripts.test_connectivity --library azure
 ```
 
 ## Test Types
@@ -88,10 +97,10 @@ Test S3 connectivity against your live cluster:
 
 ```bash
 # Using environment variables
-python -m garage_bootstrap.scripts.test_connectivity
+python -m garage_test.scripts.test_connectivity
 
 # Using command-line arguments
-python -m garage_bootstrap.scripts.test_connectivity \
+python -m garage_test.scripts.test_connectivity \
     --endpoint "your-garage-host:3900" \
     --access-key "GKxxxxxxxxxxxxxxxxxx" \
     --secret-key "your-secret-key" \
@@ -99,14 +108,14 @@ python -m garage_bootstrap.scripts.test_connectivity \
     --region "garage"
 
 # Test specific library
-python -m garage_bootstrap.scripts.test_connectivity --library minio
-python -m garage_bootstrap.scripts.test_connectivity --library s3
+python -m garage_test.scripts.test_connectivity --library minio
+python -m garage_test.scripts.test_connectivity --library s3
 
 # With verbose output
-python -m garage_bootstrap.scripts.test_connectivity -v
+python -m garage_test.scripts.test_connectivity -v
 
 # JSON output for scripting
-python -m garage_bootstrap.scripts.test_connectivity --output json
+python -m garage_test.scripts.test_connectivity --output json
 ```
 
 ### Bootstrap Test CLI
@@ -199,7 +208,7 @@ docker run --rm \
     -e TEST_SECRET_KEY="your-secret-key" \
     -e TEST_BUCKET="test-bucket" \
     garage-bootstrap:test \
-    python -m garage_bootstrap.scripts.test_connectivity
+    python -m garage_test.scripts.test_connectivity
 ```
 
 ## Running Tests in Kubernetes
@@ -212,7 +221,7 @@ kubectl run garage-test --rm -it \
     --env="TEST_ACCESS_KEY=GKxxxxxxxxxxxxxxxxxx" \
     --env="TEST_SECRET_KEY=your-secret-key" \
     --env="TEST_BUCKET=test-bucket" \
-    -- python -m garage_bootstrap.scripts.test_connectivity
+    -- python -m garage_test.scripts.test_connectivity
 ```
 
 ## Troubleshooting
@@ -262,7 +271,7 @@ export TEST_SECRET_KEY="..."     # From output
 export TEST_BUCKET="integration-test"
 
 # 4. Run connectivity tests
-python -m garage_bootstrap.scripts.test_connectivity -v
+python -m garage_test.scripts.test_connectivity -v
 
 # 5. Run full integration test suite
 pytest tests/ -v -m "integration"

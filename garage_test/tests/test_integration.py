@@ -31,7 +31,7 @@ class TestLiveMinioConnectivity:
     @pytest.fixture
     def minio_test(self, s3_test_config):
         """Create MinIO connectivity test instance."""
-        from garage_bootstrap.connectivity import MinioConnectivityTest
+        from garage_test.connectivity import MinioConnectivityTest
         return MinioConnectivityTest(
             endpoint=s3_test_config["endpoint"],
             access_key=s3_test_config["access_key"],
@@ -100,7 +100,7 @@ class TestLiveS3Connectivity:
     @pytest.fixture
     def s3_test(self, s3_test_config):
         """Create S3 connectivity test instance."""
-        from garage_bootstrap.connectivity import S3ConnectivityTest
+        from garage_test.connectivity import S3ConnectivityTest
         return S3ConnectivityTest(
             endpoint=s3_test_config["endpoint"],
             access_key=s3_test_config["access_key"],
@@ -167,7 +167,7 @@ class TestLiveAllLibraries:
 
     def test_all_libraries(self, s3_test_config):
         """Test connectivity with all supported libraries."""
-        from garage_bootstrap.connectivity import run_all_connectivity_tests
+        from garage_test.connectivity import run_all_connectivity_tests
 
         results = run_all_connectivity_tests(
             endpoint=s3_test_config["endpoint"],
@@ -197,7 +197,7 @@ class TestLiveDataManager:
     @pytest.fixture
     def data_manager(self, s3_test_config):
         """Create DataManager instance."""
-        from garage_bootstrap.data_manager import DataManager
+        from garage_test.data_manager import DataManager
         return DataManager(
             endpoint=s3_test_config["endpoint"],
             access_key=s3_test_config["access_key"],

@@ -9,6 +9,7 @@ import hashlib
 import json
 import logging
 import os
+import tempfile
 import time
 import uuid
 from typing import Dict, List, Optional
@@ -21,13 +22,20 @@ logger = logging.getLogger(__name__)
 class PersistenceTestData:
     """Manages test data for persistence testing across stages."""
 
-    def __init__(self, state_file: str = "/tmp/garage_persistence_test_state.json"):
+    def __init__(self, state_file: str = None):
         """
         Initialize persistence test data manager.
 
         Args:
-            state_file: Path to file for storing test state between stages
+            state_file: Path to file for storing test state between stages.
+                       If None, uses a user-specific temp directory for security.
         """
+        if state_file is None:
+            # Use a user-specific temp directory for security in multi-tenant environments
+            temp_dir = tempfile.gettempdir()
+            user_dir = os.path.join(temp_dir, f"garage_test_{os.getuid()}")
+            os.makedirs(user_dir, mode=0o700, exist_ok=True)
+            state_file = os.path.join(user_dir, "persistence_test_state.json")
         self.state_file = state_file
         self.state: Dict = {}
 

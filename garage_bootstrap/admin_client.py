@@ -317,7 +317,14 @@ class GarageAdminClient:
             name: Name for the access key
 
         Returns:
-            Created access key information (includes secretAccessKey)
+            Created access key information including:
+            - accessKeyId: The access key ID
+            - secretAccessKey: The secret key (SENSITIVE - handle securely, do not log)
+            - name: The key name
+
+        Warning:
+            The secretAccessKey is only returned during key creation.
+            Store it securely - it cannot be retrieved again.
         """
         return self._request("POST", "/v2/keys", data={"name": name})
 

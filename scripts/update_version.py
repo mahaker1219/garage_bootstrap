@@ -40,9 +40,10 @@ def update_chart_yaml(chart_path: Path, app_version: str, chart_version: str = N
 
     # Update appVersion (preserve quotes if present)
     content = re.sub(
-        r'(appVersion:\s*)["\']?[^"\'\n]+["\']?',
+        r'^(appVersion:\s*)["\']?[^"\'\n]+["\']?',
         f'\\1"{app_version}"',
         content,
+        flags=re.MULTILINE,
     )
 
     if chart_version:

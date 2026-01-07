@@ -12,7 +12,6 @@ import logging
 import os
 import tarfile
 import tempfile
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path

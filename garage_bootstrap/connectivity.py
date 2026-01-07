@@ -271,9 +271,12 @@ class S3ConnectivityTest(BaseConnectivityTest):
 class AzureBlobConnectivityTest(BaseConnectivityTest):
     """
     Connectivity test using Azure Blob Storage client.
-    
-    Note: Garage supports Azure Blob Storage API compatibility.
-    This uses the azure-storage-blob library with custom endpoint.
+
+    Note: This test uses the Azure Blob Storage SDK with a custom endpoint.
+    Garage is primarily S3-compatible and may have limited Azure Blob API support.
+    Some Azure-specific features may not work. This test is primarily useful for
+    applications that use the Azure SDK but need to verify basic blob operations
+    against an S3-compatible backend with Azure compatibility layer.
     """
 
     def connect(self) -> bool:

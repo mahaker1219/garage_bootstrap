@@ -1,0 +1,44 @@
+1. Garage Bootstrap has been installed!
+
+{{- if .Values.bootstrap.enabled }}
+
+The bootstrap job will run automatically to configure your Garage cluster with:
+{{- if .Values.buckets }}
+  - {{ len .Values.buckets }} bucket(s)
+{{- else }}
+  - No buckets configured
+{{- end }}
+{{- if .Values.keys }}
+  - {{ len .Values.keys }} access key(s)
+{{- else }}
+  - No access keys configured
+{{- end }}
+
+To check the bootstrap job status:
+  kubectl get jobs -l app.kubernetes.io/instance={{ .Release.Name }}
+
+To view bootstrap logs:
+  kubectl logs job/{{ include "garage-bootstrap.fullname" . }}
+
+{{- end }}
+
+{{- if .Values.secretOutput.enabled }}
+
+Access keys will be stored in the secret:
+  {{ .Values.secretOutput.name }}
+
+To retrieve access keys:
+  kubectl get secret {{ .Values.secretOutput.name }} -o jsonpath='{.data}' | base64 -d
+
+{{- end }}
+
+{{- if .Values.connectivityTest.enabled }}
+
+Connectivity tests are enabled and will run after bootstrap.
+Check test results:
+  kubectl logs job/{{ include "garage-bootstrap.fullname" . }}-connectivity-test
+
+{{- end }}
+
+For more information, visit:
+  https://github.com/mahaker1219/garage_bootstrap

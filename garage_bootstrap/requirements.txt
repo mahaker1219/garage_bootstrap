@@ -1,0 +1,19 @@
+# Core dependencies
+requests>=2.28.0
+pyyaml>=6.0
+boto3>=1.26.0
+
+# S3 client libraries
+minio>=7.1.0
+
+# Azure Blob Storage support
+azure-storage-blob>=12.14.0
+
+# Testing
+pytest>=7.2.0
+pytest-cov>=4.0.0
+
+# Development (optional)
+# black>=23.0.0
+# flake8>=6.0.0
+# mypy>=1.0.0

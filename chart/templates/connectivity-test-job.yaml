@@ -1,0 +1,53 @@
+{{- if .Values.connectivityTest.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "garage-bootstrap.fullname" . }}-connectivity-test
+  labels:
+    {{- include "garage-bootstrap.labels" . | nindent 4 }}
+    app.kubernetes.io/component: connectivity-test
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  ttlSecondsAfterFinished: {{ .Values.bootstrap.ttlSecondsAfterFinished | default 300 }}
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        {{- include "garage-bootstrap.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: connectivity-test
+    spec:
+      {{- with .Values.bootstrap.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "garage-bootstrap.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.bootstrap.podSecurityContext | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: connectivity-test
+          securityContext:
+            {{- toYaml .Values.bootstrap.securityContext | nindent 12 }}
+          image: "{{ .Values.bootstrap.image.repository }}:{{ .Values.bootstrap.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.bootstrap.image.pullPolicy }}
+          command: ["python", "-m", "pytest"]
+          args:
+            - "-v"
+            - "garage_bootstrap/tests/test_connectivity.py"
+            - "-m"
+            - "not integration"
+          env:
+            - name: GARAGE_S3_ENDPOINT
+              value: "{{ .Values.garage.s3Endpoint }}"
+            - name: TEST_BUCKET
+              value: "{{ .Values.connectivityTest.bucket }}"
+          resources:
+            {{- toYaml .Values.bootstrap.resources | nindent 12 }}
+      {{- with .Values.bootstrap.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

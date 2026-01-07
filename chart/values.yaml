@@ -1,0 +1,195 @@
+# Garage Bootstrap Helm Chart Values
+# Configure declarative bucket creation and access key management
+
+# Bootstrap job configuration
+bootstrap:
+  # Enable bootstrap job
+  enabled: true
+
+  # Bootstrap container image
+  image:
+    repository: ghcr.io/mahaker1219/garage-bootstrap
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+
+  # Image pull secrets for private registries
+  imagePullSecrets: []
+
+  # Resource limits
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Node selector
+  nodeSelector: {}
+
+  # Tolerations
+  tolerations: []
+
+  # Affinity rules
+  affinity: {}
+
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  # Pod security context
+  podSecurityContext:
+    fsGroup: 1000
+
+  # Service account
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+
+  # Additional environment variables
+  extraEnv: []
+
+  # Additional volume mounts
+  extraVolumeMounts: []
+
+  # Additional volumes
+  extraVolumes: []
+
+  # Job backoff limit
+  backoffLimit: 3
+
+  # Job TTL after finished (seconds)
+  ttlSecondsAfterFinished: 300
+
+  # Restart policy
+  restartPolicy: OnFailure
+
+# Garage cluster connection settings
+garage:
+  # Admin API endpoint
+  # This should point to the Garage admin API (default port 3903)
+  adminEndpoint: "http://garage:3903"
+
+  # S3 API endpoint (for connectivity tests)
+  s3Endpoint: "http://garage:3900"
+
+  # Admin token - required for bootstrap operations
+  # Can be provided directly or via existing secret
+  adminToken: ""
+
+  # Use existing secret for admin token
+  existingSecret:
+    enabled: false
+    name: ""
+    key: "admin-token"
+
+  # Wait for Garage to be ready before bootstrapping
+  waitForReady: true
+  waitTimeout: 120
+
+# Declarative bucket configuration
+buckets:
+  # Example bucket configurations
+  # - name: app-data
+  #   keys:
+  #     - app-key
+  #   permissions:
+  #     app-key:
+  #       read: true
+  #       write: true
+  #       owner: false
+  #   quotas:
+  #     maxSize: 10737418240  # 10GB in bytes
+  #   websiteAccess:
+  #     enabled: false
+  #     indexDocument: index.html
+  #     errorDocument: error.html
+  []
+
+# Declarative access key configuration
+keys:
+  # Example key configurations
+  # - name: app-key
+  #   allowCreateBucket: false
+  # - name: admin-key
+  #   allowCreateBucket: true
+  []
+
+# Store created keys in a Kubernetes secret
+secretOutput:
+  enabled: true
+  name: garage-access-keys
+  # Additional labels for the secret
+  labels: {}
+  # Additional annotations for the secret
+  annotations: {}
+
+# Connectivity testing configuration
+connectivityTest:
+  # Enable connectivity test job
+  enabled: false
+
+  # Test bucket (must exist)
+  bucket: "test-bucket"
+
+  # Test libraries to use
+  libraries:
+    minio: true
+    s3: true
+    azure: false
+
+  # Schedule for periodic testing (cron format)
+  # Leave empty for one-time test
+  schedule: ""
+
+# Data backup/restore configuration
+dataManagement:
+  enabled: false
+
+  # Backup configuration
+  backup:
+    enabled: false
+    # Buckets to backup
+    buckets: []
+    # Backup schedule (cron format)
+    schedule: "0 2 * * *"
+    # Storage for backups
+    storage:
+      # PVC for storing backups
+      pvc:
+        enabled: false
+        storageClass: ""
+        size: 10Gi
+      # S3 destination for backups
+      s3:
+        enabled: false
+        endpoint: ""
+        bucket: ""
+        accessKeySecret: ""
+        secretKeySecret: ""
+
+  # Restore configuration
+  restore:
+    enabled: false
+    # Source backup to restore from
+    source: ""
+
+# Persistence test configuration
+persistenceTest:
+  enabled: false
+  # Test schedule
+  schedule: ""
+
+# Common labels
+commonLabels: {}
+
+# Common annotations
+commonAnnotations: {}
+
+# Full name override
+fullnameOverride: ""
+
+# Name override
+nameOverride: ""

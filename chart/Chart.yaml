@@ -1,0 +1,17 @@
+apiVersion: v2
+name: garage-bootstrap
+description: A Helm chart for bootstrapping Garage S3-compatible object storage clusters
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - garage
+  - s3
+  - object-storage
+  - bootstrap
+  - minio
+home: https://github.com/mahaker1219/garage_bootstrap
+sources:
+  - https://github.com/mahaker1219/garage_bootstrap
+maintainers:
+  - name: mahaker1219

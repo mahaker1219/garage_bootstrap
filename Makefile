@@ -61,6 +61,18 @@ test-unit: ## Run unit tests only
 test-integration: ## Run integration tests (requires running Garage)
 	cd $(SRC_DIR) && $(PYTEST) tests/ -v -m "integration"
 
+test-connectivity: ## Run connectivity tests against live cluster (set TEST_* env vars)
+	$(PYTHON) -m garage_bootstrap.scripts.test_connectivity
+
+test-connectivity-minio: ## Run MinIO connectivity test
+	$(PYTHON) -m garage_bootstrap.scripts.test_connectivity --library minio
+
+test-connectivity-s3: ## Run S3 (boto3) connectivity test
+	$(PYTHON) -m garage_bootstrap.scripts.test_connectivity --library s3
+
+test-connectivity-azure: ## Run Azure Blob connectivity test
+	$(PYTHON) -m garage_bootstrap.scripts.test_connectivity --library azure
+
 test-persistence-stage1: ## Run persistence test stage 1
 	cd $(SRC_DIR) && $(PYTEST) tests/test_persistence.py -v -m "stage1"
 

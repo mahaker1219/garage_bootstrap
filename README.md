@@ -338,6 +338,30 @@ make build IMG_TAG=dev
 docker run --rm garage-bootstrap:dev --help
 ```
 
+## Testing Against a Live Cluster
+
+For detailed instructions on running tests against a live Garage cluster, see **[TESTING_GUIDE.md](TESTING_GUIDE.md)**.
+
+### Quick Test Commands
+
+```bash
+# Set up your environment
+export GARAGE_S3_ENDPOINT="your-garage-host:3900"
+export TEST_ACCESS_KEY="GKxxxxxxxxxxxxxxxxxx"
+export TEST_SECRET_KEY="your-secret-key"
+export TEST_BUCKET="test-bucket"
+
+# Run connectivity tests
+make test-connectivity
+
+# Run specific library tests
+make test-connectivity-minio
+make test-connectivity-s3
+
+# Run full integration test suite
+make test-integration
+```
+
 ## License
 
 This project is open source. See the LICENSE file for details.

@@ -156,13 +156,13 @@ Environment Variables:
 
 Examples:
   # Run all tests with environment variables
-  python -m garage_bootstrap.scripts.test_connectivity
+  python -m garage_test.scripts.test_connectivity
 
   # Run specific library test
-  python -m garage_bootstrap.scripts.test_connectivity --library minio
+  python -m garage_test.scripts.test_connectivity --library minio
 
   # Run with explicit parameters
-  python -m garage_bootstrap.scripts.test_connectivity \\
+  python -m garage_test.scripts.test_connectivity \\
       --endpoint localhost:3900 \\
       --access-key GKxxxxxxxxxxxxxxxxxx \\
       --secret-key yoursecretkey \\
